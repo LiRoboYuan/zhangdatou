@@ -408,10 +408,10 @@ void usart_thread_init(void)
 	uart_rx_ringbuffer_init(COM_UART_NUM2, COM_USART2_RX_BUFFER_SIZE * 2);
 	uart_rx_ringbuffer_init(COM_UART_NUM5, COM_USART5_RX_BUFFER_SIZE * 2);
 	
-	uart_tx_ringbuffer_init(COM_UART_NUM0, COM_UART0_RX_BUFFER_SIZE * 2);
-	uart_tx_ringbuffer_init(COM_UART_NUM1, COM_UART1_RX_BUFFER_SIZE * 2);
-	uart_tx_ringbuffer_init(COM_UART_NUM2, COM_USART2_RX_BUFFER_SIZE * 2);
-	uart_tx_ringbuffer_init(COM_UART_NUM5, COM_USART5_RX_BUFFER_SIZE * 2);
+	uart_tx_ringbuffer_init(COM_UART_NUM0, COM_UART0_TX_BUFFER_SIZE * 2);
+	uart_tx_ringbuffer_init(COM_UART_NUM1, COM_UART1_TX_BUFFER_SIZE * 2);
+	uart_tx_ringbuffer_init(COM_UART_NUM2, COM_USART2_TX_BUFFER_SIZE * 2);
+	uart_tx_ringbuffer_init(COM_UART_NUM5, COM_USART5_TX_BUFFER_SIZE * 2);
 #endif
 #else
     usart_dma_test(COM_UART_NUM5);
@@ -713,8 +713,8 @@ void DMA1_Channel2_IRQHandler()
 /* retarget the C library printf function to the USART */
 int fputc(int ch, FILE *f)
 {
-    usart_data_transmit(COM_UART[COM_UART_NUM5], (uint8_t)ch);
-    while(RESET == usart_flag_get(COM_UART[COM_UART_NUM5], USART_FLAG_TBE));
+    usart_data_transmit(COM_UART[COM_UART_NUM0], (uint8_t)ch);
+    while(RESET == usart_flag_get(COM_UART[COM_UART_NUM0], USART_FLAG_TBE));
     return ch;
 }
 

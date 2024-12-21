@@ -17,6 +17,11 @@
 #include "pressure.h"
 #include "Uniaxial.h"
 #include "relay.h"
+#include "cJSON.h"
+#include "getJson.h"
+
+
+
 uint64_t time_ms = 0;
 int16_t wzh_speed_moto = 20; 
 void *usb_handle = NULL;
@@ -34,62 +39,50 @@ int main(void)
     /* 等待上电稳定 */
     delay_ms(100);
 		time_ms++;
-
+		
     switch_thread_init();
 
 		uniaxial_init();
 		bsp_led_init();
 		usart_thread_init();
-		uint8_t abc[3];
-		abc[0] = 0xaa;
-		abc[1] = 0xee;
-		abc[2] = 0x00;
+		
+
 		motor_init();
 		bsp_relay_init();
 		delay_ms(1000);
-		moto_to_zero();
+//		moto_to_zero();
 		uint16_t relay_count = 0;
     while(1)
     {
 			time_ms++;
-			Check_data_from_python();
+//			Check_data_from_python();
+//			get_Json_data();
+//			int status = cJSON_demo();
 			if(time_ms % 500 == 0)
-			{
-				abc[2]++; 
-//				bsp_usart_dma_send_data(COM_UART_NUM0, &abc, 3);
-//				bsp_usart_dma_send_data(COM_UART_NUM1, &abc, 3);
-//				bsp_usart_dma_send_data(COM_UART_NUM2, &abc, 3);
-//				bsp_usart_dma_send_data(COM_UART_NUM5, &abc, 3);
+			{	
         bsp_led_toggle(LED1);
-				\
-					//set_moto_target(MOTO_4, wzh_speed_moto);
+				get_Json_data();
 					
 			}
 			if(time_ms %  100 == 0)
 			{
 //				get_pressure();
 //				get_err();
-//						run_auto_adaptation();
-//            airsac_thread_run();
-//            powercheck_thread_run();
+
 					
 			}
 
 			if (time_ms % 3 == 0)
 			{
-//            //moto_PID_thread_run();
-//						switch_thread_run();
-//						moto_run();
+
 				get_pressure();
 				get_err();
-				demo();
+
 			}
 			
 			if(time_ms % 10 == 0)
 			{
 				run_relay();
-//						mx_sensor_run();
-//						master_serial_run(1);
 					
 			}
 			delay_ms(1);

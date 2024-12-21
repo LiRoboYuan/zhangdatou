@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,GD32F407,__TARGET_FPU_VFP,USE_USBHS,GD32F407,USE_EMBEDDED_PHY</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\app;..\..\bsp;..\..\libraries\CMSIS\GD\GD32F4xx\Include;..\..\libraries\CMSIS\GD\GD32F4xx;..\..\libraries\GD32F4xx_standard_peripheral\Include;..\..\libraries\CMSIS;..\..\libraries\CMSIS\GD\GD32F4xx\Source\ARM;..\..\board;..\..\module\soft_timer;..\..\module\ringbuffer;..\..\module\buzzer;..\..\bsp\uart;..\..\bsp\moto;..\..\bsp\led;..\..\bsp\airsac;..\..\bsp\power;..\..\bsp\bsp_switch;..\..\bsp\PID;..\..\bsp\flash_operate;..\..\bsp\mx_sensor;..\..\bsp\usb;..\..\bsp\master_serial;..\..\bsp\height_and_weight;..\..\bsp\can;..\..\bsp\auto_adaptation;..\..\module\auto_adaptation_math;..\..\bsp\motor_42;..\..\bsp\relay</IncludePath>
+              <IncludePath>..\..\app;..\..\bsp;..\..\libraries\CMSIS\GD\GD32F4xx\Include;..\..\libraries\CMSIS\GD\GD32F4xx;..\..\libraries\GD32F4xx_standard_peripheral\Include;..\..\libraries\CMSIS;..\..\libraries\CMSIS\GD\GD32F4xx\Source\ARM;..\..\board;..\..\module\soft_timer;..\..\module\ringbuffer;..\..\module\buzzer;..\..\bsp\uart;..\..\bsp\moto;..\..\bsp\led;..\..\bsp\airsac;..\..\bsp\power;..\..\bsp\bsp_switch;..\..\bsp\PID;..\..\bsp\flash_operate;..\..\bsp\mx_sensor;..\..\bsp\usb;..\..\bsp\master_serial;..\..\bsp\height_and_weight;..\..\bsp\can;..\..\bsp\auto_adaptation;..\..\module\auto_adaptation_math;..\..\bsp\motor_42;..\..\bsp\relay;..\..\bsp\cjson</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -652,6 +652,16 @@
               <FileName>relay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\bsp\relay\relay.c</FilePath>
+            </File>
+            <File>
+              <FileName>cJSON.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\cjson\cJSON.c</FilePath>
+            </File>
+            <File>
+              <FileName>getJson.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\cjson\getJson.c</FilePath>
             </File>
           </Files>
         </Group>

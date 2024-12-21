@@ -9,6 +9,7 @@ import serial
 import serial.tools.list_ports
 import pyqtgraph as pg
 import threading
+import json
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget, QCheckBox, QHBoxLayout, QVBoxLayout, QFileDialog, QComboBox, QLabel, QPushButton, QSlider,QTextEdit
@@ -136,6 +137,7 @@ class MainWindow(QWidget):
         motor_init.setFixedSize(100, 40)
         motor_init.clicked.connect(lambda: self.counter_motor(3))
         motor_start = QPushButton("单次测试")
+        motor_start.clicked.connect(self.json_print)
         motor_start.setFixedSize(100, 40)
         b1_layout = QHBoxLayout()
         b1_layout.setSpacing(10)
@@ -399,6 +401,22 @@ class MainWindow(QWidget):
                     self.ser.write(send_data)
                     time.sleep(2)
             time.sleep(0.001)
+    def json_print(self):
+        if self.ser.is_open:
+            data = {
+                "target_device_name": "test_3",
+                "items": {
+                    "CMD": {
+                        "action": "get raw pressure",
+                        "com": "5"
+                    }
+                }
+            }
+
+            parsed_data = str(data)
+            parsed_data = parsed_data.encode()
+            self.ser.write(parsed_data)
+            # print(parsed_data)
 
     def counter_motor(self,flag):
         send_data = bytearray([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])

@@ -40,7 +40,7 @@ typedef enum
 #define COM_UART0_RX_GPIO_AF              GPIO_AF_7
 #define COM_UART0_RX_PORT                 GPIOA
 #define COM_UART0_RX_PIN                  GPIO_PIN_10
-#define COM_UART0_BAUD                    115200U
+#define COM_UART0_BAUD                    460800U
 #define COM_USART0_DMA_RCU                RCU_DMA1
 #define COM_USART0_DMA                    DMA1
 #define COM_USART0_TX_DMA_SUBPERI         DMA_SUBPERI4
@@ -48,8 +48,8 @@ typedef enum
 #define COM_USART0_TX_DMA_CHANNEL         DMA_CH7
 #define COM_USART0_RX_DMA_CHANNEL         DMA_CH5
 #define COM_USART0_RX_DMA_IRQ             DMA1_Channel5_IRQn
-#define COM_UART0_TX_BUFFER_SIZE					32	
-#define COM_UART0_RX_BUFFER_SIZE					32
+#define COM_UART0_TX_BUFFER_SIZE					128	
+#define COM_UART0_RX_BUFFER_SIZE					1024
 
 //串口1的宏定义
 #define COM_UART1                         USART1
@@ -71,8 +71,8 @@ typedef enum
 #define COM_USART1_TX_DMA_CHANNEL         DMA_CH6
 #define COM_USART1_RX_DMA_CHANNEL         DMA_CH5
 #define COM_USART1_RX_DMA_IRQ             DMA0_Channel5_IRQn
-#define COM_UART1_TX_BUFFER_SIZE					32	
-#define COM_UART1_RX_BUFFER_SIZE					32
+#define COM_UART1_TX_BUFFER_SIZE					128	
+#define COM_UART1_RX_BUFFER_SIZE					512
 
 
 //串口2的宏定义
@@ -95,8 +95,8 @@ typedef enum
 #define COM_USART2_TX_DMA_CHANNEL          DMA_CH3
 #define COM_USART2_RX_DMA_CHANNEL          DMA_CH1
 #define COM_USART2_RX_DMA_IRQ              DMA0_Channel1_IRQn
-#define COM_USART2_TX_BUFFER_SIZE					 32	
-#define COM_USART2_RX_BUFFER_SIZE					 32
+#define COM_USART2_TX_BUFFER_SIZE					 128	
+#define COM_USART2_RX_BUFFER_SIZE					 128
 
 
 //串口5的宏定义
@@ -119,8 +119,8 @@ typedef enum
 #define COM_USART5_TX_DMA_CHANNEL          DMA_CH6
 #define COM_USART5_RX_DMA_CHANNEL          DMA_CH2
 #define COM_USART5_RX_DMA_IRQ              DMA1_Channel2_IRQn
-#define COM_USART5_TX_BUFFER_SIZE					 32
-#define COM_USART5_RX_BUFFER_SIZE					 32
+#define COM_USART5_TX_BUFFER_SIZE					 128
+#define COM_USART5_RX_BUFFER_SIZE					 128
 
 
 #define ENABLE_USART_DMA       						1
