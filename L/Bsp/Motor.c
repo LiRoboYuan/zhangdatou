@@ -1,7 +1,8 @@
 #include "motor.h"
 #include "uart.h"
 #include "adc.h"
-
+#include "getJson.h"
+#include "gate.h"
 union Motor_Enable_Command_t  Motor_enable;
 union Clear_angle_send_t           Clear_angele;
 union Location_send_t         Location_send;
@@ -163,32 +164,6 @@ void Check_data_from_python(void){
 	memset(get_motor,0,sizeof(get_motor));
 	
 	cbuff_state = CircBuf_Pop(&USART0_RxCBuf, get_vofa, 128);   //存在其他功能观察该串口
-
-//	if(cbuff_state){
-//		if(get_vofa[0] == 0xAA){
-//			if(get_vofa[1] == 0x01){
-//				a = uint8_to_float(get_vofa[2],get_vofa[3],get_vofa[4],get_vofa[5]);
-//				Motor_run_(a);
-//			}
-//			else if(get_vofa[1] == 0x02){
-//				a = uint8_to_float(get_vofa[2],get_vofa[3],get_vofa[4],get_vofa[5]);
-//				if (a == 0){
-//					motor_enable(0);
-//				}
-//				else{
-//					motor_enable(1);
-//				}
-//			}
-//			else if(get_vofa[1] == 0x03){
-//				a = uint8_to_float(get_vofa[2],get_vofa[3],get_vofa[4],get_vofa[5]);
-//				Motor_run_H(a);
-//			}
-//			else if(get_vofa[1] == 0x04){
-//				clear_angele();
-//			}
-//		}
-//	}
-//	
 	if(cbuff_state){
 		if(get_vofa[0] == 0xA5 && get_vofa[1] == 0x5A){
 			if(get_vofa[2] == 0x1A){
@@ -228,6 +203,7 @@ void Check_data_from_python(void){
 		}
 	}
 }
+
 void moto_to_zero(){
 	speed_counter();
 		while(1){
@@ -249,4 +225,45 @@ void moto_to_zero(){
 			delay_1ms(1);
 		}
 	
+}
+void getJsonTask(){
+	int mode = get_Json_data();
+		if (mode != -1){
+			switch(mode){
+				case 0://电机失能
+				{
+					
+					motor_enable(0);
+					break;
+				}
+				case 1://电机使能
+				{
+					motor_enable(1);
+					break;
+				}
+				case 2://继电器控制一次测试 
+				{
+					break;
+				}
+				case 3://移动平台
+				{
+					int run_location = get_run_location();
+					Motor_run_H(-1*run_location);
+					break;
+				}
+				case 4://记住一个测试点位
+				{
+					break;
+				}
+				case 5://删去一个测试点位    
+				{							
+					break;
+				}
+				case 6:
+				{
+					break;
+				}
+				
+			}
+		}	
 }

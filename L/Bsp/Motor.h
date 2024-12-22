@@ -73,6 +73,7 @@ void clear_angele(void);
 void Motor_run_H(float x);
 void Motor_run_(float x);
 void speed_counter(void);
+void getJsonTask(void);
 #pragma pack() 
 
 

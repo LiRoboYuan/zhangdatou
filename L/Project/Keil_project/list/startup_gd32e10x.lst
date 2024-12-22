@@ -605,12 +605,12 @@ ARM Macro Assembler    Page 10
   380 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --depen
-d=.\output\startup_gd32e10x.d -o.\output\startup_gd32e10x.o -IC:\Users\22588\Ap
-pData\Local\Arm\Packs\GigaDevice\GD32E10x_DFP\1.2.0\Device\Include -IE:\Keil_32
-\ARM\CMSIS\Include --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSI
-ON SETA 533" --predefine="GD32E10x SETA 1" --list=.\list\startup_gd32e10x.lst .
-.\..\Firmware\CMSIS\GD\GD32E10x\Source\ARM\startup_gd32e10x.s
+Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M4.fp.sp 
+--depend=.\output\startup_gd32e10x.d -o.\output\startup_gd32e10x.o -IE:\KEIL_5\
+pack\GigaDevice\GD32E10x_DFP\1.2.0\Device\Include --predefine="__MICROLIB SETA 
+1" --predefine="__UVISION_VERSION SETA 539" --predefine="GD32E10x SETA 1" --lis
+t=.\list\startup_gd32e10x.lst ..\..\Firmware\CMSIS\GD\GD32E10x\Source\ARM\start
+up_gd32e10x.s
 
 
 

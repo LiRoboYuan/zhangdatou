@@ -48,7 +48,9 @@
 #include "pressure.h"
 #include "Motor.h"
 #include "Uniaxial.h"
-
+#include "getJson.h"
+#include "gate.h"
+#include "relay.h"
 /*!
   \brief      main function
   \param[in]  none
@@ -64,78 +66,47 @@ uint32_t time_1ms = 0;
 
 
 int main(void){
-		systick_config();
+	systick_config();
 //		adc_init();
 	
-    usart0_init(115200);
-		usart2_init(115200);
- 
-		adc_5init();
+	usart0_init(115200);
+	usart2_init(115200);
+	
+	gate_init();
+	bsp_relay_init();	
+	beep_init();
+	
+	adc_5init();
+	esp32_run();
+	motor_init();
+
+	delay_1ms(100);	
+	KEY1(0);
+	KEY2(0);
+	KEY3(0);
+	KEY4(0);
+	KEY5(0);
+	BEEP(1);
+	//moto_to_zero();
+	while(1)
+	{
+		time_1ms ++;			
+//			Check_data_from_python();
 		
-		motor_init();
-	
-		delay_1ms(100);	
-	
-//		speed_counter();
-//		while(1){
-//			static int a = 0;
-//			
-//			if(adc_value >= 3000){
-//					clear_angele();
-//					delay_1ms(2);
-//					motor_enable(0);
-//					delay_1ms(100);
-//					motor_enable(1);
-//					delay_1ms(100);
-//					Motor_run_H(-1);
-//					delay_1ms(100);
-//					moto_init_ok = 0;
-//					delay_1ms(100);
-//					break;
-//				}
-//			time_1ms ++;
-//			delay_1ms(1);
-//		}
-//	
-//		moto_to_zero();
-    while(1)
-    {
-			time_1ms ++;			
-			Check_data_from_python();
-			
-			if(time_1ms % 100 == 0){
-				get_pressure();
-				demo();
-//				static bool change = true;
-//				if(change==true){
-//					get_curr();
-//					change = false;
-//				}
-//				else{
-//					get_err();
-//					change = true;
-//				}
-//				if(adc_value >= 3000){
-//					clear_angele();
-//					delay_1ms(2);
-//					motor_enable(0);
-//					delay_1ms(100);
-//					motor_enable(1);
-//					delay_1ms(100);
-//					Motor_run_H(-10);
-//					delay_1ms(100);
-//					moto_init_ok = 0;
-//				}
-					
-					
-//				usart_dma_send_data(USART_0_TR,(uint8_t *)&abc,sizeof(abc));
-//				delay_1ms(2);
-//				usart_dma_send_data(USART_2_TR,(uint8_t *)&abc,sizeof(abc));
-			}
-						
-			
-			delay_1ms(1);
-    }	
+		if(time_1ms % 100 == 0){
+			getJsonTask();
+//			BEEP(1);
+//				get_pressure();
+//				demo();
+
+
+		}
+		else{
+//			BEEP(0);
+		}			
+		
+		delay_1ms(1);
+	}	
 }
 
 

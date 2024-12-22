@@ -6,7 +6,7 @@
 
 3："run_location":"位置"
 4："test_lacation":"位置"
-
+6："run_test_num":"测试点位数量"
 {
 
 
