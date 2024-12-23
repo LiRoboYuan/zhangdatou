@@ -11,5 +11,5 @@ void get_pressure(){
 	abc[5] = 0x01;
 	abc[6] = 0x84;
 	abc[7] = 0x0A;
-	usart_dma_send_data(USART_2_TR,(uint8_t *)&abc,sizeof(abc));
+	usart_dma_send_data(USART_1_TR,(uint8_t *)&abc,sizeof(abc));
 }

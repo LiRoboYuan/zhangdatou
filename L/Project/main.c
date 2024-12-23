@@ -70,6 +70,7 @@ int main(void){
 //		adc_init();
 	
 	usart0_init(115200);
+	usart1_init(115200);
 	usart2_init(115200);
 	
 	gate_init();
@@ -77,26 +78,29 @@ int main(void){
 	beep_init();
 	
 	adc_5init();
-	esp32_run();
+	motor1_run();
+	delay_1ms(100);	
 	motor_init();
 
-	delay_1ms(100);	
-	KEY1(0);
-	KEY2(0);
-	KEY3(0);
-	KEY4(0);
-	KEY5(0);
-	BEEP(1);
-	//moto_to_zero();
+	BEEP(0);
+	speed_counter();
+	moto_to_zero();
 	while(1)
 	{
 		time_1ms ++;			
 //			Check_data_from_python();
-		
 		if(time_1ms % 100 == 0){
+			Check_data_from_python();
+			get_err();
+			get_pressure();
+//			printf("\n%d,%d,%d",Vol_Value[0],Vol_Value[1],Vol_Value[2]);
+		}
+		if(time_1ms % 500 == 0){
 			getJsonTask();
+			
+			
 //			BEEP(1);
-//				get_pressure();
+//				
 //				demo();
 
 

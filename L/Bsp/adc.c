@@ -189,7 +189,7 @@ void DMA0_Channel0_IRQHandler(void)
 //    adc_software_trigger_enable(ADC0, ADC_REGULAR_CHANNEL);
 //}
 uint16_t adc_value[8];//ADC采样值
-uint16_t Vol_Value;//电压值
+uint16_t Vol_Value[3];//电压值
 /*!
     \brief      configure the DMA peripheral
     \param[in]  none
@@ -207,12 +207,12 @@ void dma_config(void)
     /* initialize DMA single data mode */
     dma_data_parameter.periph_addr  = (uint32_t)(&ADC_RDATA(ADC0));
     dma_data_parameter.periph_inc   = DMA_PERIPH_INCREASE_DISABLE;
-    dma_data_parameter.memory_addr  = (uint32_t)(&adc_value);//采样值存储到变量
+    dma_data_parameter.memory_addr  = (uint32_t)(&Vol_Value);//采样值存储到变量
     dma_data_parameter.memory_inc   = DMA_MEMORY_INCREASE_ENABLE;
     dma_data_parameter.periph_width = DMA_PERIPHERAL_WIDTH_16BIT;
     dma_data_parameter.memory_width = DMA_MEMORY_WIDTH_16BIT;  
     dma_data_parameter.direction    = DMA_PERIPHERAL_TO_MEMORY;
-    dma_data_parameter.number       = 8;
+    dma_data_parameter.number       = 3;
     dma_data_parameter.priority     = DMA_PRIORITY_HIGH;
     dma_init(DMA0, DMA_CH0, &dma_data_parameter);
     dma_circulation_enable(DMA0, DMA_CH0);//循环模式使能
@@ -238,16 +238,16 @@ void adc_config(void)
 	
 	
     /* ADC channel length config */
-    adc_channel_length_config(ADC0, ADC_REGULAR_CHANNEL, 8);
+    adc_channel_length_config(ADC0, ADC_REGULAR_CHANNEL, 3);
 //    /* ADC regular channel config */
-    adc_regular_channel_config(ADC0,  0, ADC_CHANNEL_0, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  1, ADC_CHANNEL_1, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  2, ADC_CHANNEL_2, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  3, ADC_CHANNEL_3, ADC_SAMPLETIME_7POINT5);   
-		adc_regular_channel_config(ADC0,  4, ADC_CHANNEL_4, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  5, ADC_CHANNEL_5, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  6, ADC_CHANNEL_6, ADC_SAMPLETIME_7POINT5);
-    adc_regular_channel_config(ADC0,  7, ADC_CHANNEL_7, ADC_SAMPLETIME_7POINT5);
+//    adc_regular_channel_config(ADC0,  0, ADC_CHANNEL_0, ADC_SAMPLETIME_7POINT5);
+//    adc_regular_channel_config(ADC0,  1, ADC_CHANNEL_1, ADC_SAMPLETIME_7POINT5);
+//    adc_regular_channel_config(ADC0,  2, ADC_CHANNEL_2, ADC_SAMPLETIME_7POINT5);
+//    adc_regular_channel_config(ADC0,  3, ADC_CHANNEL_3, ADC_SAMPLETIME_7POINT5);   
+//		adc_regular_channel_config(ADC0,  4, ADC_CHANNEL_4, ADC_SAMPLETIME_7POINT5);
+    adc_regular_channel_config(ADC0,  0, ADC_CHANNEL_5, ADC_SAMPLETIME_7POINT5);
+    adc_regular_channel_config(ADC0,  1, ADC_CHANNEL_6, ADC_SAMPLETIME_7POINT5);
+    adc_regular_channel_config(ADC0,  2, ADC_CHANNEL_7, ADC_SAMPLETIME_7POINT5);
     /* ADC trigger config */
     adc_external_trigger_source_config(ADC0, ADC_REGULAR_CHANNEL, ADC0_1_EXTTRIG_REGULAR_NONE);
     adc_external_trigger_config(ADC0, ADC_REGULAR_CHANNEL, ENABLE);
@@ -270,11 +270,11 @@ void adc_5init(void)
 	//配置PA4 ADC引脚
 	rcu_config();
 	systick_config();
-	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);  
-	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_1);
-	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_2);
-	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_3);
-	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_4);  
+//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);  
+//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_1);
+//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_2);
+//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_3);
+//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_4);  
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_5);
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_6);
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_7);

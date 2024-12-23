@@ -19,6 +19,7 @@ extern volatile uint8_t dma0_ch1_idle;
 extern volatile unsigned int uart0_flag;
 
 extern CircBuf_t USART0_RxCBuf;
+extern CircBuf_t USART1_RxCBuf;
 extern CircBuf_t USART2_RxCBuf;
 
 
@@ -44,4 +45,5 @@ unsigned int usart_read(USART_COM_ID_T com_id,
 uint8_t usart_recv(USART_COM_ID_T com_id, uint8_t *data, uint16_t len);
 void usart2_data_send_test(uint8_t *data, uint32_t len);
 void USART2_Init(uint32_t bps);
+void usart1_init(uint32_t bps);
 #endif

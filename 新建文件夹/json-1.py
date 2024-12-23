@@ -191,16 +191,19 @@ class MainWindow(QWidget):
         # 获取滑块的当前值，并更新标签显示
         slider_value = int(self.slider.value())
         self.value_label.setText(f"当前位置: {slider_value}")
-        send_data = bytearray([0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
-        send_data[0] = 0xa5
-        send_data[1] = 0x5a
-        send_data[2] = 0x1a
-        send_data[3] = 0x04
+        date = {
 
-        send_data[4] = (-1*slider_value) & 0xFF
-        send_data[5] = ((-1*slider_value) >> 8) & 0xFF  # 高字节
-        send_data[6] = 0xa5
-        send_data[7] = 0xa5
+        }
+        # send_data = bytearray([0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
+        # send_data[0] = 0xa5
+        # send_data[1] = 0x5a
+        # send_data[2] = 0x1a
+        # send_data[3] = 0x04
+        #
+        # send_data[4] = (-1*slider_value) & 0xFF
+        # send_data[5] = ((-1*slider_value) >> 8) & 0xFF  # 高字节
+        # send_data[6] = 0xa5
+        # send_data[7] = 0xa5
         if self.ser.is_open:
             self.ser.write(send_data)
             time.sleep(0.001)

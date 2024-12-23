@@ -11,9 +11,11 @@ union MotorCommandResponse    Motor1_curr;
 
 uint8_t get_vofa[128] = {0};
 uint8_t get_motor[128] = {0};
-
+uint8_t get_press[128] = {0};
 int cbuff_state = 0;
+int cbuff_state1 = 0;
 int cbuff_state2 = 0;
+
 #define TO_BIG_ENDIAN16(x) (((x) >> 8) | ((x) << 8))   // 将16位数据转换为大端格式
 #define TO_BIG_ENDIAN32(x) (((x) >> 24) | (((x) >> 8) & 0x0000FF00) | (((x) << 8) & 0x00FF0000) | ((x) << 24))  // 将32位数据转换为大端格式
 
@@ -95,7 +97,7 @@ void clear_angele(){
 设定运行速度
 */
 void speed_counter(){
-	uint8_t c[8];
+	static uint8_t c[8];
 	c[0] = 0x01;
 	c[1] = 0xf6;
 	c[2] = 0x00;
@@ -105,6 +107,7 @@ void speed_counter(){
 	c[6] = 0x00;
 	c[7] = 0x6b;
 	usart_dma_send_data(USART_2_TR,(uint8_t *)&c,sizeof(c));
+	delay_1ms(1);
 }
 /*
 设定运行角度
@@ -160,28 +163,40 @@ void get_err(){
 int16_t	 a;
 int16_t  pressure;
 void Check_data_from_python(void){
-	memset(get_vofa,0,sizeof(get_vofa));
-	memset(get_motor,0,sizeof(get_motor));
-	
-	cbuff_state = CircBuf_Pop(&USART0_RxCBuf, get_vofa, 128);   //存在其他功能观察该串口
-	if(cbuff_state){
-		if(get_vofa[0] == 0xA5 && get_vofa[1] == 0x5A){
-			if(get_vofa[2] == 0x1A){
-				if(get_vofa[3] == 0x01){
-					motor_enable(0);
-				}
-				if(get_vofa[3] == 0x02){
-					motor_enable(1);
-				}
-				if(get_vofa[3] == 0x03){
-					moto_to_zero();
-				}
-				if(get_vofa[3] == 0x04){
-					a = (get_vofa[4] ) | get_vofa[5]>>8;
-					Motor_run_H(-a);
-				}
+//	memset(get_vofa,0,sizeof(get_vofa));
+	memset(get_motor,0,128);
+	memset(get_press,0,128);
+//	cbuff_state = CircBuf_Pop(&USART0_RxCBuf, get_vofa, 128);   //存在其他功能观察该串口
+//	if(cbuff_state){
+//		if(get_vofa[0] == 0xA5 && get_vofa[1] == 0x5A){
+//			if(get_vofa[2] == 0x1A){
+//				if(get_vofa[3] == 0x01){
+//					motor_enable(0);
+//				}
+//				if(get_vofa[3] == 0x02){
+//					motor_enable(1);
+//				}
+//				if(get_vofa[3] == 0x03){
+//					moto_to_zero();
+//				}
+//				if(get_vofa[3] == 0x04){
+//					a = (get_vofa[4] ) | get_vofa[5]>>8;
+//					Motor_run_H(-a);
+//				}
+//			}
+//		}
+//	}
+	cbuff_state1 = CircBuf_Pop(&USART1_RxCBuf,get_press,128);
+	if(cbuff_state1){
+		if(get_press[0] == 0x01){
+			if(get_press[1] == 0x03){
+				pressure = get_press[3]<<8 | get_press[4];
+//				printf("%d",pressure);
 			}
+			
 		}
+		
+		
 	}
 	cbuff_state2 = CircBuf_Pop(&USART2_RxCBuf, get_motor, 128);   //存在其他功能观察该串口
 	if(cbuff_state2){
@@ -209,7 +224,7 @@ void moto_to_zero(){
 		while(1){
 			static int a = 0;
 			
-			if(adc_value[0] >= 3000){
+			if(Vol_Value[0] >= 1000){
 					clear_angele();
 					delay_1ms(2);
 					motor_enable(0);
@@ -226,8 +241,10 @@ void moto_to_zero(){
 		}
 	
 }
+
 void getJsonTask(){
 	int mode = get_Json_data();
+	
 		if (mode != -1){
 			switch(mode){
 				case 0://电机失能
@@ -243,6 +260,7 @@ void getJsonTask(){
 				}
 				case 2://继电器控制一次测试 
 				{
+					
 					break;
 				}
 				case 3://移动平台

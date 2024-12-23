@@ -50,14 +50,15 @@ int cJSON_demo(void){
 int get_Json_data(void){
 	int result = -1;  // 1 表示成功，其他值表示错误
 	uint16_t get_size = 0;
+	
 	uint16_t uart_get_num = CircBuf_GetUsedSize(&USART0_RxCBuf);
-	memset(uart_rx_buffer, 0x00, sizeof(uart_rx_buffer));
+//	memset(uart_rx_buffer, 0x00, sizeof(uart_rx_buffer));
 	if(uart_get_num > 0){
 		get_size = CircBuf_Pop(&USART0_RxCBuf, uart_rx_buffer, uart_get_num);
-		uart_rx_buffer[uart_get_num] = NULL;
-//		printf("%s\n",uart_rx_buffer);
+		printf("%s\n",(const char*)uart_rx_buffer);
 		cJSON *cjson = NULL , *motor_mode = NULL;
 		cjson = cJSON_Parse((const char*)uart_rx_buffer);
+		memset(uart_rx_buffer,0x00,1024);
 		if (cjson != NULL) {
 			// 获取 "motor_mode" 字段
 			cJSON *motor_mode = cJSON_GetObjectItem(cjson, "motor_mode");
@@ -96,6 +97,7 @@ int get_Json_data(void){
 				printf("\nError: JSON parsing failed  %d\n",get_size);
 		}
 	}
+
 	return result;
 }
 int get_run_test_num(void){

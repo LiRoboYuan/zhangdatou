@@ -970,11 +970,13 @@ static parse_buffer *buffer_skip_whitespace(parse_buffer * const buffer)
 
     while (can_access_at_index(buffer, 0) && (buffer_at_offset(buffer)[0] <= 32))
     {
+			 
        buffer->offset++;
     }
-
+		
     if (buffer->offset == buffer->length)
     {
+				
         buffer->offset--;
     }
 
@@ -1014,24 +1016,26 @@ CJSON_PUBLIC(cJSON *) cJSON_ParseWithOpts(const char *value, const char **return
 
     buffer.content = (const unsigned char*)value;
     buffer.length = strlen((const char*)value) + sizeof("");
+		
     buffer.offset = 0;
     buffer.hooks = global_hooks;
 
     item = cJSON_New_Item(&global_hooks);
     if (item == NULL) /* memory fail */
-    {
+    {		
         goto fail;
     }
-
+			
     if (!parse_value(item, buffer_skip_whitespace(skip_utf8_bom(&buffer))))
     {
+				
         /* parse failure. ep is set. */
         goto fail;
     }
 
     /* if we require null-terminated JSON without appended garbage, skip and then check for a null terminator */
     if (require_null_terminated)
-    {
+    {		
         buffer_skip_whitespace(&buffer);
         if ((buffer.offset >= buffer.length) || buffer_at_offset(&buffer)[0] != '\0')
         {
@@ -1039,11 +1043,10 @@ CJSON_PUBLIC(cJSON *) cJSON_ParseWithOpts(const char *value, const char **return
         }
     }
     if (return_parse_end)
-    {
+    {		
         *return_parse_end = (const char*)buffer_at_offset(&buffer);
     }
-
-    return item;
+		return item;
 
 fail:
     if (item != NULL)
@@ -1059,11 +1062,11 @@ fail:
 
         if (buffer.offset < buffer.length)
         {
-            local_error.position = buffer.offset;
+					local_error.position = buffer.offset;
         }
         else if (buffer.length > 0)
         {
-            local_error.position = buffer.length - 1;
+					local_error.position = buffer.length - 1;
         }
 
         if (return_parse_end != NULL)
@@ -1072,6 +1075,7 @@ fail:
         }
 
         global_error = local_error;
+				
     }
 
     return NULL;
@@ -1214,6 +1218,7 @@ static cJSON_bool parse_value(cJSON * const item, parse_buffer * const input_buf
 {
     if ((input_buffer == NULL) || (input_buffer->content == NULL))
     {
+				
         return false; /* no input */
     }
 
@@ -1243,21 +1248,22 @@ static cJSON_bool parse_value(cJSON * const item, parse_buffer * const input_buf
     /* string */
     if (can_access_at_index(input_buffer, 0) && (buffer_at_offset(input_buffer)[0] == '\"'))
     {
+				
         return parse_string(item, input_buffer);
     }
     /* number */
     if (can_access_at_index(input_buffer, 0) && ((buffer_at_offset(input_buffer)[0] == '-') || ((buffer_at_offset(input_buffer)[0] >= '0') && (buffer_at_offset(input_buffer)[0] <= '9'))))
-    {
+    {			
         return parse_number(item, input_buffer);
     }
     /* array */
     if (can_access_at_index(input_buffer, 0) && (buffer_at_offset(input_buffer)[0] == '['))
-    {
+    {			
         return parse_array(item, input_buffer);
     }
     /* object */
     if (can_access_at_index(input_buffer, 0) && (buffer_at_offset(input_buffer)[0] == '{'))
-    {
+    {			
         return parse_object(item, input_buffer);
     }
 

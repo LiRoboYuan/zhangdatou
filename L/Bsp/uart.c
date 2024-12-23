@@ -5,10 +5,10 @@
 //#include "led.h"
 
 #define USART0_BUF_SIZE         512
-#define MAX_RING_BUF_SIZE       2048
+#define MAX_RING_BUF_SIZE       1024
 #define RX2_BUF_SIZE            128
 
-#define USART_RX_CACHE_BUFFER_SIZE 2048
+#define USART_RX_CACHE_BUFFER_SIZE 1024
 uint32_t get_dma_len = 0;
 
 volatile unsigned int uart0_flag = 0;  // 使用 volatile 关键字
@@ -18,8 +18,8 @@ volatile unsigned int uart0_flag = 0;  // 使用 volatile 关键字
 unsigned char USART0_RxBuff[MAX_RING_BUF_SIZE] = {0};
 unsigned char USART0_TxBuff[MAX_RING_BUF_SIZE] = {0};
 
-//unsigned char USART1_RxBuff[MAX_RING_BUF_SIZE] = {0};
-//unsigned char USART1_TxBuff[MAX_RING_BUF_SIZE] = {0};
+unsigned char USART1_RxBuff[MAX_RING_BUF_SIZE] = {0};
+unsigned char USART1_TxBuff[MAX_RING_BUF_SIZE] = {0};
 
 unsigned char USART2_RxBuff[RX2_BUF_SIZE] = {0};
 unsigned char USART2_TxBuff[RX2_BUF_SIZE] = {0};
@@ -33,7 +33,7 @@ uint8_t USART2_RX_CACHE_BUFFER[USART_RX_CACHE_BUFFER_SIZE] = {0};
 uint8_t USART3_RX_CACHE_BUFFER[USART_RX_CACHE_BUFFER_SIZE] = {0};
 
 CircBuf_t USART0_RxCBuf = {0};
-//CircBuf_t USART1_RxCBuf = {0};
+CircBuf_t USART1_RxCBuf = {0};
 CircBuf_t USART2_RxCBuf = {0};
 //CircBuf_t USART3_RxCBuf = {0};
 
@@ -51,8 +51,8 @@ void nvic_config(uint32_t com);
 void dma0_ch4_usart0_rx_init(void);
 void dma0_ch3_usart0_tx_init(void);
 
-//void dma0_ch5_usart1_rx_init(void);
-//void dma0_ch6_usart1_tx_init(void);
+void dma0_ch5_usart1_rx_init(void);
+void dma0_ch6_usart1_tx_init(void);
 
 void dma0_ch2_usart2_rx_init(void);
 void dma0_ch1_usart2_tx_init(void);
@@ -74,8 +74,8 @@ void dma_test(void);
 #define EVAL_COM1_CLK                    RCU_USART1
 #define EVAL_COM1_TX_PIN                 GPIO_PIN_2
 #define EVAL_COM1_RX_PIN                 GPIO_PIN_3
-#define EVAL_COM1_GPIO_PORT              GPIOB
-#define EVAL_COM1_GPIO_CLK               RCU_GPIOB
+#define EVAL_COM1_GPIO_PORT              GPIOA
+#define EVAL_COM1_GPIO_CLK               RCU_GPIOA
 
 
 #define EVAL_COM2                        USART2
@@ -114,6 +114,21 @@ void usart0_init(uint32_t bps)
 		
     dma0_ch3_usart0_tx_init();
     dma0_ch4_usart0_rx_init();
+		
+	
+}
+
+void usart1_init(uint32_t bps)
+{
+    /*usart0 init*/
+    gd_eval_com_init(EVAL_COM1, bps);
+    /*configure DMA0 and usart idle interrupt*/
+    nvic_config(EVAL_COM1);
+    //dma init
+		CircBuf_Init(&USART1_RxCBuf, USART1_RxBuff, MAX_RING_BUF_SIZE);
+		
+    dma0_ch6_usart1_tx_init();
+    dma0_ch5_usart1_rx_init();
 		
 	
 }
@@ -172,43 +187,43 @@ void dma0_ch4_usart0_rx_init(void)
     //    usart_dma_transmit_config(USART0, USART_DENT_ENABLE);
 }
 
-//void dma0_ch5_usart1_rx_init(void)
-//{
-//    dma_parameter_struct dma_init_struct = {0};
+void dma0_ch5_usart1_rx_init(void)
+{
+    dma_parameter_struct dma_init_struct = {0};
 
-//    /* enable DMA0 clock */
-//    rcu_periph_clock_enable(RCU_DMA0);
-//    /* initialize DMA0 channel5 */
-//    dma_deinit(DMA0, DMA_CH5);
-//    dma_struct_para_init(&dma_init_struct);
+    /* enable DMA0 clock */
+    rcu_periph_clock_enable(RCU_DMA0);
+    /* initialize DMA0 channel5 */
+    dma_deinit(DMA0, DMA_CH5);
+    dma_struct_para_init(&dma_init_struct);
 
-//    dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
-//    dma_init_struct.memory_addr = (uint32_t)USART1_RX_CACHE_BUFFER;
-//    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-//    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-//    dma_init_struct.number = USART_RX_CACHE_BUFFER_SIZE;
-//    dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART1);
-//    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
-//    dma_init_struct.memory_width = DMA_PERIPHERAL_WIDTH_8BIT;
-//    dma_init_struct.priority = DMA_PRIORITY_LOW;
-//    dma_init(DMA0, DMA_CH5, &dma_init_struct);
+    dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
+    dma_init_struct.memory_addr = (uint32_t)USART1_RX_CACHE_BUFFER;
+    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
+    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+    dma_init_struct.number = USART_RX_CACHE_BUFFER_SIZE;
+    dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART1);
+    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
+    dma_init_struct.memory_width = DMA_PERIPHERAL_WIDTH_8BIT;
+    dma_init_struct.priority = DMA_PRIORITY_LOW;
+    dma_init(DMA0, DMA_CH5, &dma_init_struct);
 
-//    /* configure DMA mode */
-//    dma_circulation_disable(DMA0, DMA_CH5);
-//    dma_memory_to_memory_disable(DMA0, DMA_CH5);
+    /* configure DMA mode */
+    dma_circulation_disable(DMA0, DMA_CH5);
+    dma_memory_to_memory_disable(DMA0, DMA_CH5);
 
-//    /* USART DMA0 enable for reception */
-//    usart_dma_receive_config(USART1, USART_DENR_ENABLE);
+    /* USART DMA0 enable for reception */
+    usart_dma_receive_config(USART1, USART_DENR_ENABLE);
 
-//    /* enable DMA0 channel4 transfer complete interrupt */
-//    //    dma_interrupt_enable(DMA0, DMA_CH5, DMA_INT_FTF);
+    /* enable DMA0 channel4 transfer complete interrupt */
+    //    dma_interrupt_enable(DMA0, DMA_CH5, DMA_INT_FTF);
 
-//    /* enable DMA0 channel4 */
-//    dma_channel_enable(DMA0, DMA_CH5);
+    /* enable DMA0 channel4 */
+    dma_channel_enable(DMA0, DMA_CH5);
 
-//    /* USART DMA0 enable for transmission */
-//    //    usart_dma_transmit_config(USART0, USART_DENT_ENABLE);
-//}
+    /* USART DMA0 enable for transmission */
+    //    usart_dma_transmit_config(USART0, USART_DENT_ENABLE);
+}
 
 void dma0_ch2_usart2_rx_init(void)
 {
@@ -321,38 +336,38 @@ void dma0_ch3_usart0_tx_init(void)
     dma_channel_disable(DMA0, DMA_CH3);
 }
 
-//void dma0_ch6_usart1_tx_init(void)
-//{
-//    dma_parameter_struct dma_init_struct;
+void dma0_ch6_usart1_tx_init(void)
+{
+    dma_parameter_struct dma_init_struct;
 
-//    /* enable DMA0 clock */
-//    rcu_periph_clock_enable(RCU_DMA0);
+    /* enable DMA0 clock */
+    rcu_periph_clock_enable(RCU_DMA0);
 
-//    /* initialize DMA0 channel3 */
-//    dma_deinit(DMA0, DMA_CH6);
-//    dma_struct_para_init(&dma_init_struct);
+    /* initialize DMA0 channel3 */
+    dma_deinit(DMA0, DMA_CH6);
+    dma_struct_para_init(&dma_init_struct);
 
-//    dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
-//    dma_init_struct.memory_addr = (uint32_t)USART1_TxBuff;
-//    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-//    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-//    dma_init_struct.number = MAX_RING_BUF_SIZE;
-//    dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART1);
-//    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
-//    dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
-//    dma_init_struct.priority = DMA_PRIORITY_LOW;
-//    dma_init(DMA0, DMA_CH6, &dma_init_struct);
+    dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
+    dma_init_struct.memory_addr = (uint32_t)USART1_TxBuff;
+    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
+    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+    dma_init_struct.number = MAX_RING_BUF_SIZE;
+    dma_init_struct.periph_addr = (uint32_t)&USART_DATA(USART1);
+    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
+    dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+    dma_init_struct.priority = DMA_PRIORITY_LOW;
+    dma_init(DMA0, DMA_CH6, &dma_init_struct);
 
-//    /* configure DMA mode */
-//    dma_circulation_disable(DMA0, DMA_CH6);
-//    dma_memory_to_memory_disable(DMA0, DMA_CH6);
+    /* configure DMA mode */
+    dma_circulation_disable(DMA0, DMA_CH6);
+    dma_memory_to_memory_disable(DMA0, DMA_CH6);
 
-//    /* enable DMA0 channel3 transfer complete interrupt */
-//    dma_interrupt_enable(DMA0, DMA_CH6, DMA_INT_FTF);
+    /* enable DMA0 channel3 transfer complete interrupt */
+    dma_interrupt_enable(DMA0, DMA_CH6, DMA_INT_FTF);
 
-//    /* enable DMA0 channel3 */
-//    dma_channel_disable(DMA0, DMA_CH6);
-//}
+    /* enable DMA0 channel3 */
+    dma_channel_disable(DMA0, DMA_CH6);
+}
 
 void dma0_ch1_usart2_tx_init(void)
 {
@@ -432,20 +447,24 @@ void dma0_ch1_usart2_tx_init(void)
 void gd_eval_com_init(uint32_t com, uint32_t bps)
 {
     uint32_t com_id = 0U;
-//    if(EVAL_COM0 == com) {
-//        com_id = 0U;
-//    } else if (EVAL_COM1 == com) {
-//        com_id = 1U;
-//    } else if (EVAL_COM2 == com) {
-//        com_id = 2U;
-//    } else if (EVAL_COM3 == com) {
-//        com_id = 3U;
-//    }
     if(EVAL_COM0 == com) {
         com_id = 0U;
+    } else if (EVAL_COM1 == com) {
+        com_id = 1U;
     } else if (EVAL_COM2 == com) {
-        com_id = 2U; 
+        com_id = 2U;
+    } else if (EVAL_COM3 == com) {
+        com_id = 3U;
     }
+//    if(EVAL_COM0 == com) {
+//        com_id = 0U;
+//    }
+//		else if (EVAL_COM1 == com) {
+//			com_id = 1U;
+//		}
+//		else if (EVAL_COM2 == com) {
+//        com_id = 2U; 
+//    }
     /* enable GPIO clock */
     rcu_periph_clock_enable(COM_GPIO_CLK[com_id]);
 
@@ -489,11 +508,11 @@ void nvic_config(uint32_t com)
             nvic_irq_enable(USART0_IRQn, 1, 1);
 
             break;
-//        case EVAL_COM1:
-//            nvic_irq_enable(DMA0_Channel5_IRQn, 0, 0); //RX
-//            nvic_irq_enable(DMA0_Channel6_IRQn, 0, 1);  //TX
-//            nvic_irq_enable(USART1_IRQn, 1, 1);
-//            break;
+        case EVAL_COM1:
+            nvic_irq_enable(DMA0_Channel5_IRQn, 0, 0); //RX
+            nvic_irq_enable(DMA0_Channel6_IRQn, 0, 1);  //TX
+            nvic_irq_enable(USART1_IRQn, 1, 1);
+            break;
         case EVAL_COM2:
             nvic_irq_enable(DMA0_Channel2_IRQn, 0, 0); //RX
             nvic_irq_enable(DMA0_Channel1_IRQn, 0, 1);  //TX
@@ -543,14 +562,14 @@ void DMA0_Channel3_IRQHandler(void)
     }
 }
 
-//void DMA0_Channel6_IRQHandler(void)
-//{
-//    if(dma_interrupt_flag_get(DMA0, DMA_CH6, DMA_INT_FLAG_FTF))
-//    {
-//        dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);
-//        dma0_ch6_idle = 1;
-//    }
-//}
+void DMA0_Channel6_IRQHandler(void)
+{
+    if(dma_interrupt_flag_get(DMA0, DMA_CH6, DMA_INT_FLAG_FTF))
+    {
+        dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);
+        dma0_ch6_idle = 1;
+    }
+}
 
 //void DMA1_Channel4_IRQHandler(void)
 //{
@@ -568,9 +587,9 @@ void usart_dma_send_data(USART_COM_ID_T com_id, uint8_t *data, uint32_t len)
         case USART_0_TR:
             usart0_dma_send_data(data, len);
             break;
-//        case USART_1_TR:
-//            usart1_dma_send_data(data, len);
-//            break;
+        case USART_1_TR:
+            usart1_dma_send_data(data, len);
+            break;
         case USART_2_TR:
             usart2_dma_send_data(data, len);
             break;
@@ -593,16 +612,16 @@ void usart0_dma_send_data(uint8_t *data, uint32_t len)
     usart_dma_transmit_config(USART0, USART_DENT_ENABLE);//使能串口DMA发送
 }
 
-//void usart1_dma_send_data(uint8_t *data, uint32_t len)
-//{
-//    while(dma0_ch6_idle == 0);
-//    dma0_ch6_idle = 0;
-//    dma_channel_disable(DMA0, DMA_CH6);
-//    dma_memory_address_config(DMA0, DMA_CH6, (uint32_t)data);//设置要发送数据的内存地址
-//    dma_transfer_number_config(DMA0, DMA_CH6, len);//一共发多少个数据
-//    dma_channel_enable(DMA0, DMA_CH6);
-//    usart_dma_transmit_config(USART1, USART_DENT_ENABLE);//使能串口DMA发送
-//}
+void usart1_dma_send_data(uint8_t *data, uint32_t len)
+{
+    while(dma0_ch6_idle == 0);
+    dma0_ch6_idle = 0;
+    dma_channel_disable(DMA0, DMA_CH6);
+    dma_memory_address_config(DMA0, DMA_CH6, (uint32_t)data);//设置要发送数据的内存地址
+    dma_transfer_number_config(DMA0, DMA_CH6, len);//一共发多少个数据
+    dma_channel_enable(DMA0, DMA_CH6);
+    usart_dma_transmit_config(USART1, USART_DENT_ENABLE);//使能串口DMA发送
+}
 
 void usart2_dma_send_data(uint8_t *data, uint32_t len)
 {
@@ -665,30 +684,30 @@ void USART0_IRQHandler(void)
 }
 
 
-//void USART1_IRQHandler(void)
-//{
-//    uint32_t get_dma_len = 0;
+void USART1_IRQHandler(void)
+{
+    uint32_t get_dma_len = 0;
 
-//    if(usart_interrupt_flag_get(USART1, USART_INT_FLAG_IDLE))
-//    {
-//        //清除空闲中断位，读取状态寄存器0（UASRT_STAT），再读取USART_DATA即可清除该标志位
-//        USART_STAT0(USART1);
-//        USART_DATA(USART1);
-//        //        usart_data_receive(USART1);
+    if(usart_interrupt_flag_get(USART1, USART_INT_FLAG_IDLE))
+    {
+        //清除空闲中断位，读取状态寄存器0（UASRT_STAT），再读取USART_DATA即可清除该标志位
+        USART_STAT0(USART1);
+        USART_DATA(USART1);
+        //        usart_data_receive(USART1);
 
-//        dma_channel_disable(DMA0, DMA_CH5);
-//        //得到已经接收的长度和重新配置DMA接收
-//        //get_len = 10 - DMA_CHCNT(DMA0, DMA_CH5);
-//        get_dma_len = USART_RX_CACHE_BUFFER_SIZE - dma_transfer_number_get(DMA0, DMA_CH5);
-//        //把DMA数据存到环形缓冲
-//        CircBuf_Push(&USART1_RxCBuf, USART1_RX_CACHE_BUFFER, get_dma_len);
+        dma_channel_disable(DMA0, DMA_CH5);
+        //得到已经接收的长度和重新配置DMA接收
+        //get_len = 10 - DMA_CHCNT(DMA0, DMA_CH5);
+        get_dma_len = USART_RX_CACHE_BUFFER_SIZE - dma_transfer_number_get(DMA0, DMA_CH5);
+        //把DMA数据存到环形缓冲
+        CircBuf_Push(&USART1_RxCBuf, USART1_RX_CACHE_BUFFER, get_dma_len);
 
-//        dma_channel_disable(DMA0, DMA_CH5);
-//        //重新设置DMA接收数据的长度
-//        dma_transfer_number_config(DMA0, DMA_CH5, USART_RX_CACHE_BUFFER_SIZE);
-//        dma_channel_enable(DMA0, DMA_CH5);
-//    }
-//}
+        dma_channel_disable(DMA0, DMA_CH5);
+        //重新设置DMA接收数据的长度
+        dma_transfer_number_config(DMA0, DMA_CH5, USART_RX_CACHE_BUFFER_SIZE);
+        dma_channel_enable(DMA0, DMA_CH5);
+    }
+}
 
 void USART2_IRQHandler(void)
 {

@@ -12,7 +12,7 @@
 //extern uint16_t  adc_v[adc_channel_num];
 //extern volatile uint16_t adc_value1[8];
 extern uint16_t adc_value[8];//ADC采样值
-extern uint16_t Vol_Value;//电压值
+extern uint16_t Vol_Value[3];//电压值
 void rcu_config(void);
 void gpio_config(void);
 void dma_config(void);
