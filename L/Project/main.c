@@ -82,9 +82,9 @@ int main(void){
 	delay_1ms(100);	
 	motor_init();
 
-	BEEP(0);
-	speed_counter();
-	moto_to_zero();
+	BEEP(1);
+//	speed_counter();
+//	moto_to_zero();
 	while(1)
 	{
 		time_1ms ++;			

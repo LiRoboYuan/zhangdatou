@@ -2,13 +2,45 @@
 “motor_mode“：”模式“
   ”任务“：”值“
 
-”Motor_mode“ : "0,(失能电机)"；"1,（使能电机）"；"2，(使能压力传感器下落)"; "3,(移动平台)"； "4,(记住当前点位)"；"5,(删去当前点位)"； "6,(启动连续测试)"；
+”Motor_mode“ : "0,(失能电机)"；"1,（使能电机）"；"2，(使能压力传感器下落)"; "3,(移动平台)"； "6,(启动连续测试)"；
 
 3："run_location":"位置"
-4："test_lacation":"位置"
+
 6："run_test_num":"测试点位数量"
+   
+     “test_location”：{
+     	“test_location1”  :"位置"
+     	“test_location2”  :"位置"
+     	“test_location3”  :"位置"
+    	“test_location4”  :"位置"
+     	“test_location5”  :"位置"
+   	“test_location6”  :"位置"
+ 	“test_location7”  :"位置"
+    	“test_location8”  :"位置"
+     	“test_location9”  :"位置"
+     	“test_location10”:"位置"
+     	“test_location11”:"位置"
+    	“test_location12”:"位置"
+        }
 {
 
 
+
+}
+
+
+测试例
+{"motor_mode":"6",
+"run_test_num":"8",
+"test_location":{
+     	"test_location1":"1",
+     	"test_location2":"2",
+     	"test_location3":"3",
+    	"test_location4":"4",
+     	"test_location5":"5",
+   	"test_location6":"6",
+ 	"test_location7":"7",
+    	"test_location8":"8"
+        }
 
 }

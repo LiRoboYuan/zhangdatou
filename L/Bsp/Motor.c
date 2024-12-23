@@ -3,6 +3,8 @@
 #include "adc.h"
 #include "getJson.h"
 #include "gate.h"
+#include "systick.h"
+
 union Motor_Enable_Command_t  Motor_enable;
 union Clear_angle_send_t           Clear_angele;
 union Location_send_t         Location_send;
@@ -241,7 +243,17 @@ void moto_to_zero(){
 		}
 	
 }
-
+void testRunTask(){
+	int test_num = get_run_test_num();
+	int *location = get_test_location();
+	for(int i = 0; i< test_num;i++){
+		printf("\n testNum %d : location %d ",i+1 ,location[i]);
+		delay_1ms(1000);
+	}
+	clean_test_location();
+	printf("clear OK!");
+	
+}
 void getJsonTask(){
 	int mode = get_Json_data();
 	
@@ -249,36 +261,33 @@ void getJsonTask(){
 			switch(mode){
 				case 0://电机失能
 				{
-					
+					printf("disable");
 					motor_enable(0);
 					break;
 				}
 				case 1://电机使能
 				{
+					printf("enable");
 					motor_enable(1);
 					break;
 				}
 				case 2://继电器控制一次测试 
 				{
-					
+					printf("relay_run");
 					break;
 				}
 				case 3://移动平台
 				{
 					int run_location = get_run_location();
 					Motor_run_H(-1*run_location);
-					break;
-				}
-				case 4://记住一个测试点位
-				{
-					break;
-				}
-				case 5://删去一个测试点位    
-				{							
+					printf("\n move %d",run_location);
 					break;
 				}
 				case 6:
 				{
+					int test_num = get_run_test_num();
+					printf("\n test_num :%d",test_num);
+					testRunTask();
 					break;
 				}
 				

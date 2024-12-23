@@ -5,6 +5,7 @@
 #include "main.h"
 #include "cJSON.h"
 #include "string.h"
+#include "priv_malloc.h"
 
 uint8_t uart_rx_buffer[1024];
 int read_sizE = 0;
@@ -52,10 +53,8 @@ int get_Json_data(void){
 	uint16_t get_size = 0;
 	
 	uint16_t uart_get_num = CircBuf_GetUsedSize(&USART0_RxCBuf);
-//	memset(uart_rx_buffer, 0x00, sizeof(uart_rx_buffer));
 	if(uart_get_num > 0){
 		get_size = CircBuf_Pop(&USART0_RxCBuf, uart_rx_buffer, uart_get_num);
-		printf("%s\n",(const char*)uart_rx_buffer);
 		cJSON *cjson = NULL , *motor_mode = NULL;
 		cjson = cJSON_Parse((const char*)uart_rx_buffer);
 		memset(uart_rx_buffer,0x00,1024);
@@ -72,24 +71,34 @@ int get_Json_data(void){
 					result=jsondata.motor_mode;
 					cJSON *run_location  = cJSON_GetObjectItem(cjson, "run_location");
 					jsondata.run_location = atoi(run_location->valuestring);
-					printf("\n jsondata.run_location = %d",jsondata.run_location);
+					
 					break;//移动平台
-				case 4:
-					result=jsondata.motor_mode;
-					cJSON *test_lactiong = cJSON_GetObjectItem(cjson, "test_lactiong");
-					jsondata.test_lactiong = atoi(test_lactiong->valuestring);
-					printf("\n jsondata.test_lactiong = %d",jsondata.test_lactiong);
-					break;//记住一个点位
-				case 5:result=jsondata.motor_mode;break;//删去一个点位
 				case 6:
 					result=jsondata.motor_mode;
 					cJSON *run_test_num = cJSON_GetObjectItem(cjson, "run_test_num");
+					cJSON *test_location = cJSON_GetObjectItem(cjson, "test_location");
 					jsondata.run_test_num = atoi(run_test_num->valuestring);
-					printf("\n jsondata.run_test_num = %d",jsondata.run_test_num);
+					jsondata.test_lactiong = (int *)board_malloc(jsondata.run_test_num * sizeof(int));
+					if (!jsondata.test_lactiong) 
+						printf("Memory allocation failed!\n");
+					char key[50];
+					for (int i = 0; i < jsondata.run_test_num; ++i) {
+						// 构造键名
+						snprintf(key, sizeof(key), "test_location%d", i + 1);
+						// 获取对应的 JSON 对象
+						cJSON *location_item = cJSON_GetObjectItem(test_location, key);
+						if (location_item && cJSON_IsString(location_item)) {
+								// 将字符串转换为整数并存储
+								jsondata.test_lactiong[i] = atoi(location_item->valuestring);
+						} else {
+								printf("Key %s not found or is not a valid string!\n", key);
+								jsondata.test_lactiong[i] = 0; // 默认值为 0
+						}
+					}	
 					break;//启动连续测试
 			}
 
-			printf("\n result = %d",result);
+			
 			// 清理内存
 			cJSON_Delete(cjson);
 		} 
@@ -100,11 +109,19 @@ int get_Json_data(void){
 
 	return result;
 }
+
+void clean_test_location(void){
+	board_free(jsondata.test_lactiong);
+}
+int *get_test_location(void){
+	
+	return jsondata.test_lactiong;
+}
 int get_run_test_num(void){
 	return	jsondata.run_test_num;
 }
 int get_run_test_laction(void){
-	return	jsondata.test_lactiong;
+	return	*jsondata.test_lactiong;
 }
 int get_run_location(void){
 	
