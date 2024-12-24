@@ -74,6 +74,8 @@ void Motor_run_H(float x);
 void Motor_run_(float x);
 void speed_counter(void);
 void getJsonTask(void);
+void testRunTask(int flag);
+int return_pressure(void);
 #pragma pack() 
 
 

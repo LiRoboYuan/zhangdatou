@@ -21,40 +21,34 @@ int cJSON_demo(void){
 	uint16_t data_count = 0;
 	uint16_t read_size = 0;
 	int result = 0;  // 0 表示成功，其他值表示错误
-	
-	data_count = CircBuf_GetUsedSize(&USART0_RxCBuf);
-	
+//	data_count = CircBuf_GetUsedSize(&USART0_RxCBuf);
 	if (data_count > 0) {
-		read_size = CircBuf_Pop(&USART0_RxCBuf, uart_rx_buffer, data_count);
-		
+//		read_size = CircBuf_Pop(&USART0_RxCBuf, uart_rx_buffer, data_count);
 		cJSON *cjson = NULL, *single_json = NULL;
-		
 		cjson = cJSON_Parse((const char*)uart_rx_buffer);
 		if( cjson != NULL){
-			
 			single_json = cJSON_GetObjectItem(cjson, "items");
-			
 			single_json = cJSON_GetArrayItem(single_json, 0);
 			single_json = cJSON_GetObjectItem(single_json, "CMD");
 			int abcd = atoi(single_json->valuestring);
 			printf("%s:json size %d  %s\n", __FUNCTION__, data_count, single_json->valuestring);
-			
 //			uart_rx_ringbuffer_clean(COM_UART_NUM0);
 		}
 		cJSON_Delete(cjson);
 	}		
 	return result;
-	
+
 }
 
 
 int get_Json_data(void){
 	int result = -1;  // 1 表示成功，其他值表示错误
 	uint16_t get_size = 0;
-	
-	uint16_t uart_get_num = CircBuf_GetUsedSize(&USART0_RxCBuf);
+	uint16_t uart_get_num = usart_get_rx_data_count(USART_0_TR);
+
 	if(uart_get_num > 0){
-		get_size = CircBuf_Pop(&USART0_RxCBuf, uart_rx_buffer, uart_get_num);
+		get_size = usart_recv(USART_0_TR, uart_rx_buffer, uart_get_num);
+//		printf("\n uart_get_num %d",uart_get_num);
 		cJSON *cjson = NULL , *motor_mode = NULL;
 		cjson = cJSON_Parse((const char*)uart_rx_buffer);
 		memset(uart_rx_buffer,0x00,1024);
@@ -71,7 +65,6 @@ int get_Json_data(void){
 					result=jsondata.motor_mode;
 					cJSON *run_location  = cJSON_GetObjectItem(cjson, "run_location");
 					jsondata.run_location = atoi(run_location->valuestring);
-					
 					break;//移动平台
 				case 6:
 					result=jsondata.motor_mode;
@@ -97,8 +90,6 @@ int get_Json_data(void){
 					}	
 					break;//启动连续测试
 			}
-
-			
 			// 清理内存
 			cJSON_Delete(cjson);
 		} 
@@ -106,13 +97,13 @@ int get_Json_data(void){
 				printf("\nError: JSON parsing failed  %d\n",get_size);
 		}
 	}
-
 	return result;
 }
 
 void clean_test_location(void){
 	board_free(jsondata.test_lactiong);
 }
+
 int *get_test_location(void){
 	
 	return jsondata.test_lactiong;

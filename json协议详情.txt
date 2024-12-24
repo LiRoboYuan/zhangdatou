@@ -44,3 +44,7 @@
         }
 
 }
+
+{"motor_mode":"3",
+"run_location":"50"
+} 

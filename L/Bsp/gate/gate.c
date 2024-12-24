@@ -2,7 +2,7 @@
 
 void gate_init(void){
 	rcu_periph_clock_enable(RCU_GPIOB);
-	gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15);
+	gpio_init(GPIOB, GPIO_MODE_OUT_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15);
 	gpio_bit_set(GPIOB, GPIO_PIN_12);
 }
 

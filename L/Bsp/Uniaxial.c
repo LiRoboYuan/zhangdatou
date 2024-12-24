@@ -3,8 +3,6 @@
 
 union Uniaxial_date_t Uniaxial_date;
 
-
-
 void uniaxial_init(void){
 	Uniaxial_date.press_resis.hand = 0xa55a;
 	Uniaxial_date.press_resis.tran_type = 0xa1;
@@ -26,7 +24,6 @@ void demo(void){
 	static int a,b = 0;
 	static int press = 0;
 	static int resis = 50;
-	
 	send_press_resis(press,resis);
 	if(a == 0)
 		press++;
@@ -36,8 +33,6 @@ void demo(void){
 		a = 1;
 	if(press <= 0)
 		a = 0;
-	
-	
 	if(b == 0)
 		resis++;
 	else
@@ -46,6 +41,4 @@ void demo(void){
 		b = 1;
 	if(resis <= 0)
 		b = 0;
-	
-
 }

@@ -159,7 +159,6 @@ void DMA0_Channel0_IRQHandler(void)
 ////    adc_oversample_mode_config(ADC0, ADC_OVERSAMPLING_ALL_CONVERT, ADC_OVERSAMPLING_SHIFT_4B, ADC_OVERSAMPLING_RATIO_MUL16);
 ////    adc_oversample_mode_enable(ADC0);
 //	
-
 //    /* ADC channel length config */
 //    adc_channel_length_config(ADC0, ADC_REGULAR_CHANNEL, 8);
 //    /* ADC regular channel config */
@@ -200,10 +199,8 @@ void dma_config(void)
 {
     /* ADC_DMA_channel configuration */
     dma_parameter_struct dma_data_parameter;
-    
     /* ADC DMA_channel configuration */
     dma_deinit(DMA0, DMA_CH0);//ADC0需要映射到通道0
-    
     /* initialize DMA single data mode */
     dma_data_parameter.periph_addr  = (uint32_t)(&ADC_RDATA(ADC0));
     dma_data_parameter.periph_inc   = DMA_PERIPH_INCREASE_DISABLE;
@@ -216,13 +213,9 @@ void dma_config(void)
     dma_data_parameter.priority     = DMA_PRIORITY_HIGH;
     dma_init(DMA0, DMA_CH0, &dma_data_parameter);
     dma_circulation_enable(DMA0, DMA_CH0);//循环模式使能
-  
     /* enable DMA channel */
     dma_channel_enable(DMA0, DMA_CH0);//使能DMA0通道0
 }
-
-
-
 
 void adc_config(void)
 { /* reset ADC */
@@ -235,8 +228,6 @@ void adc_config(void)
     adc_special_function_config(ADC0, ADC_SCAN_MODE, ENABLE);
     /* ADC data alignment config */
     adc_data_alignment_config(ADC0, ADC_DATAALIGN_RIGHT);
-	
-	
     /* ADC channel length config */
     adc_channel_length_config(ADC0, ADC_REGULAR_CHANNEL, 3);
 //    /* ADC regular channel config */
@@ -278,7 +269,6 @@ void adc_5init(void)
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_5);
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_6);
 	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_7);
-	
 	//配置ADC
 	dma_config();//DMA配置
 	adc_config();//ADC配置

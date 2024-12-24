@@ -51,6 +51,7 @@
 #include "getJson.h"
 #include "gate.h"
 #include "relay.h"
+#include "dpm_rm550.h"
 /*!
   \brief      main function
   \param[in]  none
@@ -67,8 +68,7 @@ uint32_t time_1ms = 0;
 
 int main(void){
 	systick_config();
-//		adc_init();
-	
+
 	usart0_init(115200);
 	usart1_init(115200);
 	usart2_init(115200);
@@ -76,51 +76,50 @@ int main(void){
 	gate_init();
 	bsp_relay_init();	
 	beep_init();
-	
+	led_init();
+	printf("123321");
+	dpm_run(1000);
+	while(1);
 	adc_5init();
 	motor1_run();
 	delay_1ms(100);	
 	motor_init();
 
 	BEEP(1);
-//	speed_counter();
-//	moto_to_zero();
-	while(1)
-	{
-		time_1ms ++;			
-//			Check_data_from_python();
-		if(time_1ms % 100 == 0){
-			Check_data_from_python();
-			get_err();
+	speed_counter();
+	moto_to_zero();
+	while(1){
+		time_1ms ++;		
+		if(time_1ms % 2 == 0){
+			pressure_run();
 			get_pressure();
-//			printf("\n%d,%d,%d",Vol_Value[0],Vol_Value[1],Vol_Value[2]);
+			Check_data_from_python();
+		}
+		if(time_1ms % 100 == 0 && time_1ms % 500 != 0){
+
+			relay_run(0);
+			
+		}
+		
+		if(time_1ms % 1000 == 0){
+			testRunTask(0);
 		}
 		if(time_1ms % 500 == 0){
 			getJsonTask();
-			
-			
 //			BEEP(1);
-//				
-//				demo();
-
-
+			
 		}
 		else{
 //			BEEP(0);
 		}			
-		
 		delay_1ms(1);
 	}	
 }
 
-
-void TIMER3_IRQHandler( void )
-{
-    if( SET == timer_interrupt_flag_get( TIMER3, TIMER_INT_FLAG_UP ) )
-    {
+void TIMER3_IRQHandler( void ){
+    if( SET == timer_interrupt_flag_get( TIMER3, TIMER_INT_FLAG_UP )){
         /* clear channel 0 interrupt bit */
         timer_interrupt_flag_clear( TIMER3, TIMER_INT_FLAG_UP );
-
     }
 }
 

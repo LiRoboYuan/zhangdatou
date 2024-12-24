@@ -26,9 +26,9 @@
 				gpio_bit_set(GPIOB, GPIO_PIN_8);\
 				else		\
 				gpio_bit_reset(GPIOB, GPIO_PIN_8)		
-
+void relay_run(int num);
 void bsp_relay_init(void);
 void beep_init(void);
-
+void led_init(void);
 #endif
 
