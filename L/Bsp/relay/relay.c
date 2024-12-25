@@ -1,4 +1,5 @@
 #include "relay.h"
+#include "systick.h"
 void bsp_relay_init(){
 	rcu_periph_clock_enable(RCU_GPIOB);
 	gpio_init(GPIOB, GPIO_MODE_OUT_OD, GPIO_OSPEED_10MHZ, GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_7);
@@ -12,8 +13,10 @@ void relay_run(int num){
 	static int flag = 0;
 	flag--;
 	if(num == 1){
+		delay_1ms(200);
 		KEY1(0);
-		flag = 2;
+		flag = 4;
+		
 		return;
 	}
 	if(flag == 0){

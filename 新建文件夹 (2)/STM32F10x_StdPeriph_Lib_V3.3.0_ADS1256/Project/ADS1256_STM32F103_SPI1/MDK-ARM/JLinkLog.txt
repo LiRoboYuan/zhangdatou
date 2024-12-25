@@ -1,0 +1,90 @@
+T3278 000:165.316   SEGGER J-Link V6.86 Log File
+T3278 000:165.574   DLL Compiled: Sep 24 2020 17:31:31
+T3278 000:165.587   Logging started @ 2024-12-25 08:43
+T3278 000:165.599 - 165.605ms
+T3278 000:165.625 JLINK_SetWarnOutHandler(...)
+T3278 000:165.640 - 0.020ms
+T3278 000:165.654 JLINK_OpenEx(...)
+T3278 000:169.372   Firmware: J-Link V9 compiled May  7 2021 16:26:12
+T3278 000:169.616   Decompressing FW timestamp took 161 us
+T3278 000:181.357   Hardware: V9.40
+T3278 000:181.385   S/N: 69400168
+T3278 000:181.391   OEM: SEGGER
+T3278 000:181.397   Feature(s): RDI, GDB, FlashDL, FlashBP, JFlash
+T3278 000:183.092   TELNET listener socket opened on port 19021
+T3278 000:183.187   WEBSRV Starting webserver
+T3278 000:183.345   WEBSRV Webserver running on local port 19080
+T3278 000:183.354 - 17.702ms returns "O.K."
+T3278 000:183.367 JLINK_GetEmuCaps()
+T3278 000:183.372 - 0.006ms returns 0xB9FF7BBF
+T3278 000:183.378 JLINK_TIF_GetAvailable(...)
+T3278 000:183.582 - 0.206ms
+T3278 000:183.592 JLINK_SetErrorOutHandler(...)
+T3278 000:183.596 - 0.005ms
+T3278 000:183.618 JLINK_ExecCommand("ProjectFile = "E:\Git_hub\gd32_zhangdatou\新建文件夹 (2)\STM32F10x_StdPeriph_Lib_V3.3.0_ADS1256\Project\ADS1256_STM32F103_SPI1\MDK-ARM\JLinkSettings.ini"", ...). 
+T3278 000:189.986 - 6.380ms returns 0x00
+T3278 000:190.020 JLINK_ExecCommand("Device = STM32F103C8", ...). 
+T3278 000:190.212   Device "STM32F103C8" selected.
+T3278 000:190.454 - 0.421ms returns 0x00
+T3278 000:190.469 JLINK_GetHardwareVersion()
+T3278 000:190.473 - 0.006ms returns 94000
+T3278 000:190.496 JLINK_GetDLLVersion()
+T3278 000:190.500 - 0.006ms returns 68600
+T3278 000:190.505 JLINK_GetOEMString(...)
+T3278 000:190.510 JLINK_GetFirmwareString(...)
+T3278 000:190.514 - 0.005ms
+T3278 000:190.520 JLINK_GetDLLVersion()
+T3278 000:190.524 - 0.005ms returns 68600
+T3278 000:190.528 JLINK_GetCompileDateTime()
+T3278 000:190.532 - 0.005ms
+T3278 000:190.538 JLINK_GetFirmwareString(...)
+T3278 000:190.541 - 0.005ms
+T3278 000:190.603 JLINK_GetHardwareVersion()
+T3278 000:190.653 - 0.059ms returns 94000
+T3278 000:190.902 JLINK_GetSN()
+T3278 000:190.911 - 0.011ms returns 69400168
+T3278 000:190.919 JLINK_GetOEMString(...)
+T3278 000:190.929 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T3278 000:192.609 - 1.712ms returns 0x00
+T3278 000:192.652 JLINK_HasError()
+T3278 000:192.687 JLINK_SetSpeed(5000)
+T3278 000:193.044 - 0.364ms
+T3278 000:193.343 JLINK_HasError()
+T3278 000:193.352 JLINK_SetResetType(JLINKARM_RESET_TYPE_NORMAL)
+T3278 000:193.356 - 0.005ms returns JLINKARM_RESET_TYPE_NORMAL
+T3278 000:193.360 JLINK_Reset()
+T3278 000:840.739   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 001:003.264   
+  ***** Error: 
+T3278 001:003.337   STM32: Connecting to CPU via connect under reset failed.
+T3278 001:245.913   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 001:408.167   
+  ***** Error: 
+T3278 001:408.242   STM32: Connecting to CPU via connect under reset failed.
+T3278 001:461.023 - 1267.736ms
+T3278 001:461.173 JLINK_GetId()
+T3278 001:571.586   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 001:732.373   
+  ***** Error: 
+T3278 001:732.448   STM32: Connecting to CPU via connect under reset failed.
+T3278 001:974.254   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 002:136.216   
+  ***** Error: 
+T3278 002:136.292   STM32: Connecting to CPU via connect under reset failed.
+T3278 002:189.392 - 728.297ms returns 0x00000000
+T3278 002:189.546 JLINK_GetId()
+T3278 002:301.185   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 002:462.355   
+  ***** Error: 
+T3278 002:462.428   STM32: Connecting to CPU via connect under reset failed.
+T3278 002:701.591   STM32 (connect): Can not attach to CPU. Trying connect under reset.
+T3278 002:862.292   
+  ***** Error: 
+T3278 002:862.338   STM32: Connecting to CPU via connect under reset failed.
+T3278 002:915.099 - 725.606ms returns 0x00000000
+T3278 002:929.430 JLINK_GetFirmwareString(...)
+T3278 002:929.458 - 0.072ms
+T3278 011:570.741 JLINK_Close()
+T3278 011:582.905 - 12.186ms
+T3278 011:582.930   
+T3278 011:582.936   Closed

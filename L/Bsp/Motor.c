@@ -15,11 +15,11 @@ union MotorCommandResponse    Motor1_curr;
 
 uint8_t get_vofa[128] = {0};
 uint8_t get_motor[128] = {0};
-uint8_t get_press[128] = {0};
+
 int cbuff_state = 0;
 int cbuff_state1 = 0;
 int cbuff_state2 = 0;
-
+int16_t  adc_get = 0;
 int32_t motor_err = 0;
 int16_t  pressure;
 int Motor_ok = 1;
@@ -140,8 +140,12 @@ void Motor_run_(float x){//X代表坐标，相对位置移动
 }
 
 void Motor_run_H(float x){	//X代表坐标，绝对位置移动
-	if(x <-200){
-		x=-200;
+
+	motor1_run();
+	delay_1ms(10);
+
+	if(x <-280){
+		x=-280;
 	}
 	else if(x > -5){
 		x = -5;
@@ -180,15 +184,15 @@ void get_err(){
 
 void Check_data_from_python(void){
 	memset(get_motor,0,128);
-	memset(get_press,0,128);
-	cbuff_state1 = usart_recv(USART_1_TR,get_press,128);
-	if(cbuff_state1){
-		if(get_press[0] == 0x01){
-			if(get_press[1] == 0x03){
-				pressure = get_press[3]<<8 | get_press[4];
-			}
-		}
-	}
+	
+//	cbuff_state1 = usart_recv(USART_1_TR,get_press,128);
+//	if(cbuff_state1){
+//		if(get_press[0] == 0x01){
+//			if(get_press[1] == 0x03){
+//				pressure = get_press[3]<<8 | get_press[4];
+//			}
+//		}
+//	}
 	cbuff_state2 = usart_recv(USART_2_TR, get_motor, 128);   //存在其他功能观察该串口
 	if(cbuff_state2){
 		if(get_motor[0] == 0x01){
@@ -200,6 +204,8 @@ void Check_data_from_python(void){
 			}
 			else if(get_motor[1] == 0xFD && get_motor[2] == 0x9F && get_motor[3] == 0x6B){
 				Motor_ok = 1;
+				esp32_run();
+				delay_1ms(10);
 			}
 			else{
 				motor_curr = get_motor[2]<<8 | get_motor[3];
@@ -208,9 +214,12 @@ void Check_data_from_python(void){
 //				}
 			}
 		}
+		else if(get_motor[0] == 0x55){
+			adc_get = get_motor[2]<<8 | get_motor[3];
+		}
 	}
 }
-int return_pressure(void){
+float return_pressure(void){
 	
 	return pressure;
 }
@@ -219,7 +228,7 @@ void moto_to_zero(){
 	speed_counter();
 		while(1){
 			static int a = 0;
-			if(Vol_Value[0] >= 1000){
+			if(return_zero_key() >= 1000){
 					clear_angele();
 					delay_1ms(2);
 					motor_enable(0);
@@ -250,6 +259,13 @@ void testRunTask(int run_flag){
 		i++;
 		return;
 	}
+	else if(run_flag == 2){
+		test_num = 0;
+		i = -1;
+//		relay_run(1);
+		clean_test_location();
+		printf("clear OK!");
+	}
 	if(i < test_num && Motor_ok == 1 &&  return_pressure_state() == 3 && i != -1){
 		printf("\n testNum %d : location %d ",i+1 ,location[i]);
 		Motor_run_H(-1*location[i]);
@@ -258,17 +274,23 @@ void testRunTask(int run_flag){
 	}
 	else if(Motor_ok == 1 && return_pressure_state() == 0 && i <= test_num  && test_num != 0) {
 		relay_run(1);
+		
 		pressure_start();
 	}
-	
+	/*
+	测试完成
+	*/
 	if(i == test_num && Motor_ok == 1){
 		test_num = 0;
+		
 		i = -1;
 		relay_run(1);
 		clean_test_location();
 		printf("clear OK!");
 	}
 }
+
+//void 
 
 void getJsonTask(){
 	int mode = get_Json_data();
@@ -294,6 +316,10 @@ void getJsonTask(){
 					printf("\n move %d",run_location);
 					break;
 				}
+				case 5:{
+					testRunTask(2);
+					break;
+				}
 				case 6:{
 					int test_num = get_run_test_num();
 					printf("\n test_num :%d",test_num);
@@ -304,3 +330,7 @@ void getJsonTask(){
 			}
 		}	
 }
+void get_adc_pressuer_Task(){
+	
+}
+

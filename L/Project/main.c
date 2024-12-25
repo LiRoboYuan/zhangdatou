@@ -72,15 +72,16 @@ int main(void){
 	usart0_init(115200);
 	usart1_init(115200);
 	usart2_init(115200);
-	
+	delay_1ms(3000);	
 	gate_init();
 	bsp_relay_init();	
 	beep_init();
 	led_init();
 	printf("123321");
-	dpm_run(1000);
-	while(1);
+	dpm_run(400,1500);
+	
 	adc_5init();
+	delay_1ms(10);
 	motor1_run();
 	delay_1ms(100);	
 	motor_init();
@@ -89,14 +90,21 @@ int main(void){
 	speed_counter();
 	moto_to_zero();
 	while(1){
-		time_1ms ++;		
+		time_1ms ++;	
+		pressure_run();		
 		if(time_1ms % 2 == 0){
-			pressure_run();
+			
 			get_pressure();
 			Check_data_from_python();
+//			printf("samples:%f\n",return_pressure());
 		}
-		if(time_1ms % 100 == 0 && time_1ms % 500 != 0){
+		if(time_1ms % 100 == 0){
+//			esp32_run();
+//			static uint8_t aa231[3] = {0x55,0x54,0x53};
+//			usart_dma_send_data(USART_2_TR,(uint8_t *)&aa231,sizeof(aa231));
 
+//			delay_1ms(10);
+//			motor1_run();
 			relay_run(0);
 			
 		}
@@ -106,7 +114,6 @@ int main(void){
 		}
 		if(time_1ms % 500 == 0){
 			getJsonTask();
-//			BEEP(1);
 			
 		}
 		else{

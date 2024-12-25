@@ -90,6 +90,9 @@ static uint32_t COM_RX_PIN[COMn] = {EVAL_COM0_RX_PIN, EVAL_COM1_RX_PIN, EVAL_COM
 static uint32_t COM_GPIO_PORT[COMn] = {EVAL_COM0_GPIO_PORT, EVAL_COM1_GPIO_PORT, EVAL_COM2_GPIO_PORT, EVAL_COM3_GPIO_PORT};
 static rcu_periph_enum COM_GPIO_CLK[COMn] = {EVAL_COM0_GPIO_CLK, EVAL_COM1_GPIO_CLK, EVAL_COM2_GPIO_CLK, EVAL_COM3_GPIO_CLK};
 
+
+uint8_t get_press[128] = {0};
+int16_t pressure_uart = 0;
 /*!
   \brief      main function
   \param[in]  none
@@ -674,8 +677,21 @@ void USART1_IRQHandler(void)
         dma_transfer_number_config(DMA0, DMA_CH5, USART_RX_CACHE_BUFFER_SIZE);
         dma_channel_enable(DMA0, DMA_CH5);
     }
+		int cbuff_state1 = 0;
+		memset(get_press,0,128);
+		cbuff_state1 = usart_recv(USART_1_TR,get_press,128);
+		if(cbuff_state1){
+			if(get_press[0] == 0x01){
+				if(get_press[1] == 0x03){
+					pressure_uart = get_press[3]<<8 | get_press[4];
+				}
+			}
+	}
+		
 }
-
+int16_t get_pressure_uart(void){
+	return pressure_uart;
+}
 void USART2_IRQHandler(void)
 {
     uint32_t get_dma_len = 0;

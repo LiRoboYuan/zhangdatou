@@ -32,5 +32,5 @@ unsigned int usart_read(USART_COM_ID_T com_id,
                         uint16_t len);
 
 uint8_t usart_recv(USART_COM_ID_T com_id, uint8_t *data, uint16_t len);
-
+int16_t get_pressure_uart(void);
 #endif

@@ -274,4 +274,6 @@ void adc_5init(void)
 	adc_config();//ADC≈‰÷√
 		
 }
-
+uint16_t return_zero_key(){
+	return Vol_Value[0];
+}

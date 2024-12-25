@@ -18,11 +18,12 @@ void get_pressure(){
 }
 
 void pressure_run(){
-	if(pressure_state == 1 && return_pressure() > 150){
+	if(pressure_state == 1 && get_pressure_uart() > 150){
 		pressure_state = 2;
 	}
-	else if(pressure_state == 2 && return_pressure() < 10){
+	else if(pressure_state == 2 && get_pressure_uart() <= 0){
 		pressure_state = 3;
+		delay_1ms(200);
 	}
 }
 void clear_pressure_state(){

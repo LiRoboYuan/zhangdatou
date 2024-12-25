@@ -48,3 +48,20 @@
 {"motor_mode":"3",
 "run_location":"50"
 } 
+
+测试数据：
+{
+	"motor_mode":"6",
+	"run_test_num":"3",
+	"test_point_config":{
+		"test_point_total":{
+			"pressure":[300,200,100],
+			"position":"200",
+			"Vcc":"3.3",
+			"Resi":"100",
+			"ResiMode":"static"
+		}
+	}
+}
+
+
