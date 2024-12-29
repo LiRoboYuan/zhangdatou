@@ -7,7 +7,8 @@
 #include "pressure.h"
 #include "relay.h"
 
-
+int test_num = 0;
+int i = -1;
 union Motor_Enable_Command_t  Motor_enable;
 union Clear_angle_send_t      Clear_angele;
 union Location_send_t         Location_send;
@@ -215,9 +216,21 @@ void Check_data_from_python(void){
 			}
 		}
 		else if(get_motor[0] == 0x55){
-			adc_get = get_motor[2]<<8 | get_motor[3];
+			adc_get = get_motor[1]<<8 | get_motor[2];
 		}
+		
 	}
+}
+uint32_t get_resis(){
+//	return 300/((adc_get/10000)*2 - 3.3);
+//	return adc_get;
+	double a = 2.0*((adc_get+50.0)/10000.0);
+	double i = (3.3-a)/1000.0;
+	uint32_t resis = (3.5-3.3)/i;
+//	printf("%u+%d\n",resis,adc_get);
+//	printf("%u\n",resis);
+	return resis;
+//	return adc_get + 50;
 }
 float return_pressure(void){
 	
@@ -225,6 +238,8 @@ float return_pressure(void){
 }
 
 void moto_to_zero(){
+	motor1_run();
+	delay_1ms(10);
 	speed_counter();
 		while(1){
 			static int a = 0;
@@ -245,10 +260,14 @@ void moto_to_zero(){
 		}
 }
 
+
+int return_test_num(){
+	return i;
+}
 void testRunTask(int run_flag){
-	static int test_num = 0;
+	
 	static int *location;
-	static int i = -1;
+	
 	if(run_flag == 1){
 		test_num = get_run_test_num();
 		location = get_test_location();
@@ -280,9 +299,9 @@ void testRunTask(int run_flag){
 	/*
 	测试完成
 	*/
-	if(i == test_num && Motor_ok == 1){
+	if(i == test_num && Motor_ok == 1 && return_pressure_state() == 0){
 		test_num = 0;
-		
+		sendJsonTask(10,0,0,0);
 		i = -1;
 		relay_run(1);
 		clean_test_location();
@@ -325,6 +344,7 @@ void getJsonTask(){
 					printf("\n test_num :%d",test_num);
 					testRunTask(1);
 					clear_pressure_state();
+					sendJsonTask(0,0,0,0);
 					break;
 				}
 			}

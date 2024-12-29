@@ -5,6 +5,6 @@ void pressure_run(void);
 int return_pressure_state(void);
 void clear_pressure_state(void);
 void pressure_start(void);
-
+void pressure_init(void);
 #endif
 

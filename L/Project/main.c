@@ -52,6 +52,7 @@
 #include "gate.h"
 #include "relay.h"
 #include "dpm_rm550.h"
+#include "diatance.h"
 /*!
   \brief      main function
   \param[in]  none
@@ -72,41 +73,38 @@ int main(void){
 	usart0_init(115200);
 	usart1_init(115200);
 	usart2_init(115200);
-	delay_1ms(3000);	
+	delay_1ms(100);	
+	pressure_init();
 	gate_init();
 	bsp_relay_init();	
 	beep_init();
 	led_init();
 	printf("123321");
-	dpm_run(400,1500);
+	dpm_run(350,1000);
 	
 	adc_5init();
 	delay_1ms(10);
 	motor1_run();
 	delay_1ms(100);	
 	motor_init();
-
+//	esp32_run();
 	BEEP(1);
-	speed_counter();
+	
 	moto_to_zero();
+	distance_init();
 	while(1){
 		time_1ms ++;	
-		pressure_run();		
+		pressure_run();	
+		Check_data_from_python();		
 		if(time_1ms % 2 == 0){
-			
 			get_pressure();
-			Check_data_from_python();
-//			printf("samples:%f\n",return_pressure());
+			sendJsonTask(1,return_test_num(),return_pressure_uart(),get_resis());
+			
+
 		}
 		if(time_1ms % 100 == 0){
-//			esp32_run();
-//			static uint8_t aa231[3] = {0x55,0x54,0x53};
-//			usart_dma_send_data(USART_2_TR,(uint8_t *)&aa231,sizeof(aa231));
 
-//			delay_1ms(10);
-//			motor1_run();
 			relay_run(0);
-			
 		}
 		
 		if(time_1ms % 1000 == 0){
@@ -114,7 +112,6 @@ int main(void){
 		}
 		if(time_1ms % 500 == 0){
 			getJsonTask();
-			
 		}
 		else{
 //			BEEP(0);

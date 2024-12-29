@@ -23,8 +23,10 @@ typedef struct
 {
 	int motor_mode;
 	int run_test_num;
+	int run_test_pressure_num;
 	int run_location;
 	int *test_lactiong;
+	int *test_pressure;
 }json_data_t;
 
 int get_Json_data(void);
@@ -35,5 +37,8 @@ int get_run_test_laction(void);
 int get_run_location(void);
 int *get_test_location(void);
 void clean_test_location(void);
+void sendJsonTask(int Mode,int test_now,int press,uint32_t resis);
+
+
 #endif
 

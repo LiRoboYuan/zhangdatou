@@ -76,6 +76,8 @@ void speed_counter(void);
 void getJsonTask(void);
 void testRunTask(int flag);
 float return_pressure(void);
+int return_test_num();
+uint32_t get_resis();
 #pragma pack() 
 
 

@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "circular_buffer.h"
-
+#include "getJson.h"
+#include "Motor.h"
 
 #define MAX_RING_BUF_SIZE       512
 #define USART_RX_CACHE_BUFFER_SIZE 512
@@ -664,7 +665,6 @@ void USART1_IRQHandler(void)
         USART_STAT0(USART1);
         USART_DATA(USART1);
         //        usart_data_receive(USART1);
-
         dma_channel_disable(DMA0, DMA_CH5);
         //得到已经接收的长度和重新配置DMA接收
         //get_len = 10 - DMA_CHCNT(DMA0, DMA_CH5);
@@ -684,10 +684,15 @@ void USART1_IRQHandler(void)
 			if(get_press[0] == 0x01){
 				if(get_press[1] == 0x03){
 					pressure_uart = get_press[3]<<8 | get_press[4];
+					pressure_uart = get_press[3]<<8 | get_press[4];
+//					sendJsonTask(1,return_test_num(),pressure_uart,get_resis());
 				}
 			}
 	}
 		
+}
+int16_t return_pressure_uart(void){
+	return pressure_uart;
 }
 int16_t get_pressure_uart(void){
 	return pressure_uart;

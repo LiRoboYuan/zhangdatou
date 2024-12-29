@@ -22,7 +22,7 @@ void usart3_init(uint32_t bps);
 void usart2_init(uint32_t bps);
 
 void usart_dma_send_data(USART_COM_ID_T com_id, uint8_t *data, uint32_t len);
-
+int16_t return_pressure_uart(void);
 int usart_rx_probe(USART_COM_ID_T com_id);
 int usart_get_rx_data_count(USART_COM_ID_T com_id);
 void usart_drop(USART_COM_ID_T com_id, uint8_t drop_lens);

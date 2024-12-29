@@ -15,6 +15,7 @@ uint8_t json_buffer_test1[] ="{\"motor_mode\":\"1\",\"relay_flag\":\"2\",\"locat
 
 
 json_data_t jsondata;
+cJSON *Json_send = NULL; // 全局变量
 
 int iwaaa=0;
 int cJSON_demo(void){
@@ -80,17 +81,29 @@ int get_Json_data(void){
 					cJSON *position = cJSON_GetObjectItem(test_point_total, "position");
 					int position_count = cJSON_GetArraySize(position);
 					jsondata.run_test_num = position_count;
-					jsondata.test_lactiong = (int *)board_malloc(position_count * sizeof(int));
+					jsondata.test_lactiong = (int *)mymalloc(0,position_count * sizeof(int));
 					for (int i = 0; i < position_count; i++) {
-					cJSON *item = cJSON_GetArrayItem(position, i);
-					if (cJSON_IsNumber(item)) {
-							// 将每个数字存储到 position_array 数组中
-							jsondata.test_lactiong[i] = item->valueint;
-							printf("position[%d] = %d\n", i, jsondata.test_lactiong[i]);
-					} else {
-							printf("Error: 'position' item %d is not a number.\n", i);
+						cJSON *item = cJSON_GetArrayItem(position, i);
+						if (cJSON_IsNumber(item)) {
+								// 将每个数字存储到 position_array 数组中
+								jsondata.test_lactiong[i] = item->valueint;
+								printf("position[%d] = %d\n", i, jsondata.test_lactiong[i]);
+						} else {
+								printf("Error: 'position' item %d is not a number.\n", i);
+						}
 					}
-			}
+					
+					cJSON *pressure = cJSON_GetObjectItem(test_point_total, "pressure");
+					jsondata.run_test_pressure_num = cJSON_GetArraySize(pressure);
+					jsondata.test_pressure = (int *)mymalloc(0,jsondata.run_test_pressure_num * sizeof(int));
+					for(int i = 0; i < jsondata.run_test_pressure_num; i++) {
+						cJSON * pre = cJSON_GetArrayItem(pressure, i);
+						if (cJSON_IsNumber(pre)) {
+							jsondata.test_pressure[i] = pre->valueint;
+							printf("test_pressure[%d] = %d\n", i, jsondata.test_pressure[i]);
+						}
+						
+					}
 					break;
 //				case 6:
 //					result=jsondata.motor_mode;
@@ -127,7 +140,8 @@ int get_Json_data(void){
 }
 
 void clean_test_location(void){
-	board_free(jsondata.test_lactiong);
+	myfree(1,jsondata.test_lactiong);
+	myfree(1,jsondata.test_pressure);
 }
 
 int *get_test_location(void){
@@ -143,4 +157,91 @@ int get_run_test_num(void){
 int get_run_location(void){
 	
 	return jsondata.run_location;
+}
+int get_run_test_pressure_num(){
+	return jsondata.run_test_pressure_num;
+}
+
+void sendJsonTask(int Mode,int test_now,int press,uint32_t resis){
+	
+	if(Mode == 0){
+		if (Json_send != NULL) {
+            cJSON_Delete(Json_send);  // 先清空之前的 root 对象
+    }
+		Json_send = cJSON_CreateObject();
+		
+		for(int i=0;i < jsondata.run_test_num;i++){
+			 char test_name[10];
+			 snprintf(test_name, sizeof(test_name), "test%d", i+1);
+			 // 为每个测试项创建一个子对象
+			 cJSON *test_obj = cJSON_CreateObject();
+			 // 向每个 test 对象添加空数组 pressure 和 resis
+			 // 创建 pressure 和 resis 数组，并初始化为包含 n 个 0
+		 	 cJSON *pressure_array = cJSON_CreateArray();
+			 cJSON *resis_array = cJSON_CreateArray();
+			
+			// 向 pressure_array 和 resis_array 数组添加 n 个 0
+			 for (int i = 0; i < get_run_test_pressure_num(); i++) {
+					cJSON_AddItemToArray(pressure_array, cJSON_CreateNumber(0));  // 添加 0 到 pressure 数组
+					cJSON_AddItemToArray(resis_array, cJSON_CreateNumber(0));     // 添加 0 到 resis 数组
+			 }
+			
+			// 将数组添加到 test_obj 对象中
+			 cJSON_AddItemToObject(test_obj, "pressure", pressure_array);
+			 cJSON_AddItemToObject(test_obj, "resis", resis_array);
+    
+			 // 将这个 test 对象添加到根对象中，键名为 testX
+			 cJSON_AddItemToObject(Json_send, test_name, test_obj);
+		}
+		return;
+	}
+	if(Mode == 10){
+		char *json_string = cJSON_PrintUnformatted(Json_send);
+		// 通过串口发送数据
+		if (json_string != NULL) {
+			printf("%s", json_string);  // 使用 printf 输出 JSON 字符串
+			cJSON_free(json_string);    // 释放由 cJSON_PrintUnformatted() 分配的内存
+		}
+		cJSON_Delete(Json_send);  // 释放 root 对象及其所有子对象的内存
+		Json_send = NULL;         // 显式设置 Json_send 为 NULL
+		return;
+	}
+	
+	if (Json_send == NULL) {
+		return;
+	}
+	else if(Mode == 1) {
+		char test_name2[50];
+		snprintf(test_name2, sizeof(test_name2), "test%d", test_now);
+//		printf("test_name: %s\n", test_name2); 
+		cJSON *test_obj = cJSON_GetObjectItem(Json_send, test_name2);
+		// 获取 test1 下的 pressure 数组
+		
+		cJSON *pressure_array = cJSON_GetObjectItem(test_obj, "pressure");
+		cJSON *resis_array = cJSON_GetObjectItem(test_obj, "resis");	
+//		if(test_obj == NULL){
+//			printf("test_obj == NULL");
+//		}
+//		if(pressure_array == NULL){
+//			printf("pressure_array == NULL");
+//		}
+		
+		for(int i=0;i<get_run_test_pressure_num();i++){
+			cJSON *item_use = cJSON_GetArrayItem(pressure_array, i);
+			cJSON *item_use2 = cJSON_GetArrayItem(resis_array, i);
+			if(press == jsondata.test_pressure[i] && item_use->valuedouble == 0 && item_use2->valuedouble == 0){
+				// 创建新的数据项
+//				printf("%d\n",jsondata.test_pressure[i]);
+				cJSON *new_press = cJSON_CreateNumber(jsondata.test_pressure[i]);
+				printf("%u\n",resis);
+				cJSON_DeleteItemFromArray(pressure_array, i);
+				cJSON_InsertItemInArray(pressure_array, i, new_press);
+				
+				cJSON *new_resis = cJSON_CreateNumber(resis);
+				cJSON_DeleteItemFromArray(resis_array, i);
+				cJSON_InsertItemInArray(resis_array, i, new_resis);
+				
+			}
+		}
+	}	
 }

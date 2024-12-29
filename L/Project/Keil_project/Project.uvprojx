@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,GD32E10X,USE_USB_FS GD32E103V_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Firmware\CMSIS;..\;..\..\Utilities\LCD_Commom;..\..\Firmware\CMSIS\GD\GD32E10x\Include;..\..\Firmware\GD32E10x_standard_peripheral\Include;..\..\Bsp;..\..\Imu;..\..\Control;..\..\Sdk;..\..\GD32E10x_usbfs_library\driver\Include;..\..\GD32E10x_usbfs_library\device\class\cdc\Include;..\..\GD32E10x_usbfs_library\device\core\Include;..\..\GD32E10x_usbfs_library\ustd\common;..\..\GD32E10x_usbfs_library\ustd\class\cdc;..\Keil_project;..\..\Bsp;..\..\Bsp\cjson;..\..\Bsp\malloc;..\..\Bsp\relay;..\..\Bsp\gate;..\..\Bsp\dpm_rm550</IncludePath>
+              <IncludePath>..\..\Firmware\CMSIS;..\;..\..\Utilities\LCD_Commom;..\..\Firmware\CMSIS\GD\GD32E10x\Include;..\..\Firmware\GD32E10x_standard_peripheral\Include;..\..\Bsp;..\..\Imu;..\..\Control;..\..\Sdk;..\..\GD32E10x_usbfs_library\driver\Include;..\..\GD32E10x_usbfs_library\device\class\cdc\Include;..\..\GD32E10x_usbfs_library\device\core\Include;..\..\GD32E10x_usbfs_library\ustd\common;..\..\GD32E10x_usbfs_library\ustd\class\cdc;..\Keil_project;..\..\Bsp;..\..\Bsp\cjson;..\..\Bsp\malloc;..\..\Bsp\relay;..\..\Bsp\gate;..\..\Bsp\dpm_rm550;..\..\Bsp\distance</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -617,6 +617,11 @@
               <FileName>dpm_rm550.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Bsp\dpm_rm550\dpm_rm550.c</FilePath>
+            </File>
+            <File>
+              <FileName>diatance.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Bsp\distance\diatance.c</FilePath>
             </File>
           </Files>
         </Group>
